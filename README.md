@@ -1,0 +1,2 @@
+# resources
+AI training resources
