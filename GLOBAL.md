@@ -56,3 +56,4 @@
 - **Paste only relevant scope** — Only share the file/function/block directly related to the problem, not the entire repo
 - **Specify the target** — Always state which file, line range, or function to focus on
 - **One problem per prompt** — Do not mix multiple issues in a single request
+- **Ask before explore** — When given a file path, do NOT read parent directories or sibling files without asking first; each tool (argocd, ansible, etc.) in the repo is independent and has its own context
