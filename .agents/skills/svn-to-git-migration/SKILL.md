@@ -152,14 +152,27 @@ When SVN receives new commits, you must pull them into Git. Depending on how you
 ### Workflow A: Re-Grafting (If history was rewritten)
 Because the OID grafting process rewrites all commit hashes for staging/master, you cannot run `git svn rebase` directly on the rewritten repository.
 
-Instead, you must fetch the new commits in the independent branch workspaces (which hold the clean `git-svn` metadata), push them to the intermediate `unified.git` repository, re-run the grafting pipeline, perform the tip merges, and push the results.
+Instead, you must fetch the new commits in the independent branch workspaces (which hold the clean `git-svn` metadata), check if there are actual updates, and if so, push them to the intermediate `unified.git` repository, re-run the grafting pipeline, perform the tip merges, and push the results.
 
-#### Step 1: Fetch from SVN in each branch repository
-Go to each independent branch clone directory and fetch the latest commits:
+> [!IMPORTANT]
+> **Check for updates first**: If SVN has no new commits, you must skip the re-grafting and tip merge alignment process entirely. Running the alignment merges (`-s ours`) on unchanged branches will create redundant merge commits with new timestamps, changing the branch tip hashes and requiring unnecessary force-pushes.
+
+#### Step 1: Fetch from SVN and check for updates
+Go to each independent branch clone directory and fetch the latest commits from SVN:
 ```bash
 cd /tmp/svn-migration/develop && git svn fetch
 cd /tmp/svn-migration/staging && git svn fetch
 cd /tmp/svn-migration/master  && git svn fetch
+```
+
+To verify if there are any new commits that need to be processed:
+```bash
+# Check if the fetched git-svn tip of all branches are already integrated in the unified target repository
+# (Run this check for each branch; if all return true/exit-code-0, then no updates are found)
+git -C /tmp/unified.git merge-base --is-ancestor $(git -C /tmp/svn-migration/develop rev-parse refs/remotes/git-svn) develop && \
+git -C /tmp/unified.git merge-base --is-ancestor $(git -C /tmp/svn-migration/staging rev-parse refs/remotes/git-svn) staging && \
+git -C /tmp/unified.git merge-base --is-ancestor $(git -C /tmp/svn-migration/master rev-parse refs/remotes/git-svn) master && \
+echo "No updates found in SVN. Aborting sync process to avoid redundant merges." && exit 0
 ```
 
 #### Step 2: Push the new commits to `unified.git`
