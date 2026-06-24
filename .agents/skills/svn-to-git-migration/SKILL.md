@@ -277,4 +277,29 @@ To avoid re-uploading history and prevent `HTTP 413` errors:
 
 A helper script implementing this logic with dynamic step scaling (binary backoff) is available at `scripts/push_in_batches.sh`.
 
+## Real-world Migration Sync & Build Pitfalls
+
+When syncing SVN updates to a Git repository, several common pitfalls can arise, especially around file tracking, Maven builds, and clean CI environments (like GitLab CI vs. cached Jenkins environments).
+
+### 1. Unsynced File Deletions (Unsynced Delete Commits)
+- **The Issue**: During history synchronization, if a delete commit (e.g., where files are deleted in SVN or an upstream branch) is not properly synced to the target Git repository, it causes file drift. Conversely, if files are deleted in the target repository but the corresponding SVN delete commits or history are not aligned, active files may appear to be deleted or missing in Git because the sync logic fails to map the deletion history properly.
+- **The Solution**: 
+  - Ensure that SVN delete commits are accurately mapped and synchronized as explicit Git commits.
+  - Run comparison scripts between the raw SVN branch workspace and the Git repository to verify exact file-by-file consistency.
+  - Automatically restore any active files that were incorrectly deleted during misaligned sync runs, and ensure that only genuinely deleted legacy/obsolete files in SVN are removed from Git.
+
+### 2. CI/CD Clean Build Failures vs. Jenkins Cache
+- **The Issue**: A Git commit that builds successfully on Jenkins can fail with compilation errors in GitLab CI. This is often because Jenkins runners reuse a shared local `.m2/repository` cache containing internal dependencies from other branches. A clean runner (e.g., GitLab CI) has a fresh `.m2` directory and fails to download these internal dependencies (e.g., `agency-security`, `member-security`, `member-supports`) if they are not published to the corporate Nexus mirror.
+- **The Solution**:
+  - Do not rely on local dependency caching for internal modules in CI.
+  - Ensure all dependent modules (`member`, `partner`, etc.) are actively declared and uncommented in the parent `pom.xml` reactor so they are compiled from source during the pipeline run.
+  - Ensure the pipeline runner dynamically configures `~/.m2/settings.xml` in `before_script` to point to the correct Nexus mirror.
+
+### 3. Git Push Security Guardrails
+- **The Issue**: Autonomous AI agents or scripts running in sandboxed environments may have security guardrails that block dangerous commands like `git push` to prevent accidental overwrites or data leaks.
+- **The Solution**:
+  - The agent should prepare, stage, and commit all changes locally (e.g., updating reactor modules in `pom.xml` or syncing source files).
+  - The final `git push` command must be explicitly presented to the human user to execute manually in their terminal.
+
+
 
