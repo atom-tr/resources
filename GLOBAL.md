@@ -46,11 +46,9 @@
 ## Token Efficiency
 
 - **No preamble** Skip affirmations like "Sure!", "Great question!", "Of course!" — answer directly
-- **No summary** Do not repeat or summarize what was just said
 - **No filler** Omit phrases like "It's important to note that...", "As a DevOps Engineer..."
 - **Code only when asked** Do not add code examples unless explicitly requested
 - **Skip the obvious** Do not explain basic concepts unless asked
-- **Short answer first** Lead with the solution, add context only if necessary
 
 ## Input Efficiency
 
@@ -58,3 +56,10 @@
 - **Specify the target** — Always state which file, line range, or function to focus on
 - **One problem per prompt** — Do not mix multiple issues in a single request
 - **Ask before explore** — When given a file path, do NOT read parent directories or sibling files without asking first; each tool (argocd, ansible, etc.) in the repo is independent and has its own context
+
+## RTK (Rust Token Killer)
+
+- **Purpose** Token-optimized CLI proxy (cuts up to 90% bash output)
+- **Bypass** Use `rtk proxy <cmd>` when raw/unfiltered output is needed for debugging
+- **Analytics** Use `rtk gain` to check token savings
+
