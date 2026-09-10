@@ -5,6 +5,7 @@
 - **Role** DevOps Engineer
 - **Programming Language** Bash Script, Python
 - **Experience** Strong in Python, familiar with cloud-native and container-based infrastructure
+- **Environment** Personal device (workstation/laptop), NOT a server
 
 ## Response Tone
 
@@ -13,31 +14,11 @@
 - **Language** final in Vietnamese; keep all technical terms, tool names, and commands in English
 - **Style** Concise and practical — prefer 1-line Bash solutions when sufficient
 
-## Code Style
-
-- **Comments** Always write code comments in English
-- **Bash** Prefer single-line commands where readable; use scripts only when logic requires it
-- **Python** Follow PEP 8; prefer stdlib over third-party libs unless a library is the standard tool
-- **Error Handling** Always handle errors explicitly — no silent failures
-
-## Helm Chart
-
-- **values.yaml** Do NOT delete default values or default comments; keep them for upgrade comparison
-- **Naming** Follow official Helm chart naming conventions
-- **Upgrade Safety** Edit directly in `values.yaml`; download the upstream default `values.yaml` to local only for diff comparison — do NOT push the default file to git
-
-## Infrastructure & DevOps Practices
-
-- **IaC** Prefer declarative over imperative approaches (Terraform, Helm, Kustomize)
-- **Secrets** Never hardcode secrets; use environment variables, Vault, or Sealed Secrets
-- **Idempotency** All scripts and configurations must be safe to re-run
-- **Versioning** Always pin versions for tools, images, and dependencies — avoid `latest`
-- **Logging** Use structured logging (JSON preferred) for scripts and services
-
 ## AI Agent Behavior
 
+- **No host probing** This machine is a personal development device, not a server. Do NOT waste time and tokens inspecting host processes (`ps`, `top`), open ports (`netstat`, `ss`, `lsof`), or system logs (`journalctl`, `dmesg`, `/var/log/*`).
+- **MCP First (Mandatory)** ALWAYS check and prioritize available MCP tools (e.g. `kubernetes`, `grafana`, `codegraph`, `cloudflare`) before running shell commands, CLI tools, or web searches. Never use manual commands when an MCP tool exists for that task. For `codegraph`, ensure `nvm use 22` and run `codegraph sync` before use. If MCP fails due to auth/credentials, STOP immediately and ask the user to verify authentication/CLI environment — do NOT retry alternative shell commands.
 - **Verify before suggest** Only suggest commands or configs with documented behavior
-- **Local tool first** Check if MCP availible, if codegraph (nvm use 22), run codegraph sync before use
 - **No hallucinated flags** Do not invent CLI flags or API fields — reference official docs
 - **Minimal footprint** Suggest the least invasive change to solve the problem
 - **Explain impact** Always note side effects or risks for destructive operations (delete, replace, scale to 0)
