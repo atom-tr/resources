@@ -32,7 +32,9 @@ when they don't know the English word/phrase.
    point instead of a long one. Don't pad or over-explain.
 3. **No Markdown syntax**: no `#`/`##`/`###`, no `**bold**`/`__underline__`,
    no backtick code spans. Plain text only.
-4. **Bullets**: plain `- ` for sub-points within a single task.
+4. **Bullets**: plain `- ` for sub-points, only when a task has 2+ points. If a
+   task has only **one** point, merge it onto the same line as the task name
+   (`Task name: the point.`) — no bullet, no second line.
 5. **Split distinct tasks/topics with a line containing exactly `---`.** Each
    unrelated task/ticket/topic in the paste gets its own block, separated by
    `---` on its own line. Don't put `---` between bullets of the *same* task.
@@ -41,8 +43,11 @@ when they don't know the English word/phrase.
 7. **Grammar & phrasing pass**: fix grammar, tense, and awkward technical
    phrasing without changing meaning or dropping details. Don't invent facts,
    ticket numbers, or details not in the input.
-8. Output as one plain-text block the user can copy straight into Slack — no
-   surrounding code fence.
+8. **Separate code block per day.** If the input covers more than one day
+   (Yesterday / Today), output each day as its own fenced code block, with a
+   plain label line above it (`Yesterday:` / `Today:`) — so each block can be
+   copied independently into the matching Slack field. If the input covers
+   only one day, output a single code block, no label needed.
 
 ## Worked example
 
@@ -58,15 +63,33 @@ laystar888.com
 Produce:
 
 ```
-INFRA-2472: Migrate proxy QAT
-- Fork nginx-forward-qat; merge once confirmed working.
+INFRA-2472: Fork nginx-forward-qat; merge once confirmed working.
 ---
-laystar888.com
-- Continue monitoring traffic patterns.
+laystar888.com: Continue monitoring traffic patterns.
 ```
 
-Notice: no header added, all English, `---` splits the two tasks, no
+Notice: no header added, all English, `---` splits the two tasks, each task
+has only one point so it's merged onto one line (no bullet), no
 `#`/`**`/backticks.
+
+If input mixes both days, e.g.:
+
+```
+hôm qua: INFRA-2472 fork nginx-forward-qat, merge sau khi confirm ok
+hôm nay: laystar888.com tiếp tục theo dõi traffic pattern
+```
+
+Produce two separate blocks:
+
+Yesterday:
+```
+INFRA-2472: Fork nginx-forward-qat; merge once confirmed working.
+```
+
+Today:
+```
+laystar888.com: Continue monitoring traffic patterns.
+```
 
 ## Process
 
@@ -76,4 +99,5 @@ Notice: no header added, all English, `---` splits the two tasks, no
    strip Markdown symbols, keep technical terms/IDs verbatim.
 3. Join the tasks back together with a `---` line between each (not within).
 4. Final scan for leftover `#`, `**`, `_`, or backticks — remove any found.
-5. Output the plain-text block, ready to paste — no header, no code fence.
+5. Output the plain-text block(s), ready to paste — no header. Use a
+   separate fenced code block per day if the input covers more than one day.
