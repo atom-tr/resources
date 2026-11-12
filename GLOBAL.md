@@ -17,7 +17,7 @@
 ## AI Agent Behavior
 
 - **No host probing** This machine is a personal development device, not a server. Do NOT waste time and tokens inspecting host processes (`ps`, `top`), open ports (`netstat`, `ss`, `lsof`), or system logs (`journalctl`, `dmesg`, `/var/log/*`).
-- **MCP First (Mandatory)** ALWAYS check and prioritize available MCP tools (e.g. `kubernetes`, `grafana`, `codegraph`, `cloudflare`) before running shell commands, CLI tools, or web searches. Never use manual commands when an MCP tool exists for that task. For `codegraph`, ensure `nvm use 22` and run `codegraph sync` before use. If MCP fails due to auth/credentials, STOP immediately and ask the user to verify authentication/CLI environment — do NOT retry alternative shell commands.
+- **MCP First (Mandatory)** ALWAYS check and prioritize available MCP tools (e.g. `kubernetes`, `grafana`, `codegraph`, `cloudflare`) before running shell commands, CLI tools, or web searches. Never use manual commands when an MCP tool exists for that task. If MCP fails due to auth/credentials, STOP immediately and ask the user to verify authentication/CLI environment — do NOT retry alternative shell commands.
 - **Verify before suggest** Only suggest commands or configs with documented behavior
 - **No hallucinated flags** Do not invent CLI flags or API fields — reference official docs
 - **Minimal footprint** Suggest the least invasive change to solve the problem

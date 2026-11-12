@@ -1,23 +1,10 @@
 ---
 trigger: glob
-globs:
-  - "**/*.sh"
-  - "**/*.bash"
-  - "**/*.zsh"
-  - "**/*.py"
-description: Code style standards for Bash and Python scripts, comments, and error handling
+globs: "**/*.sh, **/*.bash, **/*.zsh, **/*.py, **/*.md"
+description: Code style and comment standards
 ---
 
-# Code Style
-
-## Comments
-- Always write code comments in English
-
-## Bash
-- Prefer single-line commands where readable; use scripts only when logic requires it
-
-## Python
-- Follow PEP 8; prefer stdlib over third-party libs unless a library is the standard tool
-
-## Error Handling
-- Always handle errors explicitly — no silent failures
+- Comments in English only.
+- Bash: prefer readable 1-liners; scripts only when logic requires.
+- Python: PEP 8; prefer stdlib over third-party unless standard.
+- Handle errors explicitly; no silent failures.

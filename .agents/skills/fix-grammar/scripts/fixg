@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# fixg: fix grammar via local Ollama. Usage: fixg "text"  or  echo "text" | fixg
+set -euo pipefail
+text="${*:-$(cat)}"
+[ -n "$text" ] || { echo "fixg: empty input" >&2; exit 1; }
+jq -n --arg t "$text" '{model:"qwen3.5:4b",prompt:("Fix grammar and spelling errors in the text, including pronoun case, capitalization and punctuation. Keep the original meaning. Output the corrected text only.\n\nText: "+$t),think:false,stream:false,options:{temperature:0}}' \
+  | curl -sf --max-time 120 localhost:11434/api/generate -d @- \
+  | jq -er .response || { echo "fixg: ollama request failed" >&2; exit 1; }
